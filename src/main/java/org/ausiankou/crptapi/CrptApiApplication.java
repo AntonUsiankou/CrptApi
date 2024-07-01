@@ -61,16 +61,13 @@ class CrptApi {
                     long sleepTime = resetTime - currentTime;
                     TimeUnit.MILLISECONDS.sleep(sleepTime);
                 }
-
-                // Perform the API call here
+                
                 performApiCall(document, signature);
             }
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
-            // Обработка прерывания потока
             System.err.println("Thread was interrupted: " + e.getMessage());
         } catch (IOException e) {
-            // Обработка ошибки ввода-вывода
             System.err.println("IO error occurred: " + e.getMessage());
             throw new RuntimeException("Failed to perform API call", e);
         } finally {
@@ -84,26 +81,20 @@ class CrptApi {
         HttpClient httpClient = HttpClientBuilder.create().build();
         HttpPost request = new HttpPost("https://ismp.crpt.ru/api/v3/lk/documents/create");
 
-        // Serialize the document object to JSON
         ObjectMapper objectMapper = new ObjectMapper();
         String jsonDocument = objectMapper.writeValueAsString(document);
 
-        // Set the request body
         StringEntity requestEntity = new StringEntity(jsonDocument, ContentType.APPLICATION_JSON);
         request.setEntity(requestEntity);
 
-        // Include the necessary headers
         request.setHeader("Authorization", "");
 
-        // Make the API request
         HttpResponse response = httpClient.execute(request);
 
-        // Handle the response
         int statusCode = response.getStatusLine().getStatusCode();
         HttpEntity responseEntity = response.getEntity();
         if (responseEntity != null) {
             String responseBody = EntityUtils.toString(responseEntity);
-            // Process the response body as needed
             System.out.println("API response received: " + responseBody);
         }
     }
